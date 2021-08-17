@@ -10,6 +10,7 @@ import torch
 import torch.backends.cudnn as cudnn
 import torch.nn as nn
 
+
 from function_baseline.config import get_parse_args
 from function_baseline.data_preparation import data_preparation
 from function_baseline.model_pos_preparation import model_pos_preparation
@@ -83,7 +84,6 @@ def main(args):
     logger.plot(['loss_train', 'error_h36m_p1'])
     savefig(path.join(ckpt_dir_path, 'log.eps'))
     return
-
 
 
 if __name__ == '__main__':

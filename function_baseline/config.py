@@ -1,7 +1,6 @@
 import argparse
 
 
-
 def get_parse_args():
     parser = argparse.ArgumentParser(description='PyTorch training script')
 
@@ -15,6 +14,8 @@ def get_parse_args():
                         help='checkpoint directory')
     parser.add_argument('--snapshot', default=25, type=int, help='save models_baseline for every (default: 20)')
     parser.add_argument('--note', default='debug', type=str, help='additional name on checkpoint directory')
+    parser.add_argument('--gpus', default='0', type=str, metavar='LIST',
+                        help='gpu numbers to train')
 
     # Evaluate choice
     parser.add_argument('--evaluate', default='', type=str, metavar='FILENAME',
