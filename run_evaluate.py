@@ -11,7 +11,7 @@ import torch.backends.cudnn as cudnn
 from function_baseline.config import get_parse_args
 from function_baseline.data_preparation import data_preparation
 from function_baseline.model_pos_preparation import model_pos_preparation
-from function_poseaug.model_pos_eval import evaluate
+from function_poseaug.model_pos_eval import evaluate, evaluate_safety
 
 
 def main(args):
@@ -37,14 +37,17 @@ def main(args):
 
     print('==> Evaluating...')
 
-    error_h36m_p1, error_h36m_p2 = evaluate(data_dict['H36M_test'], model_pos, device)
-    print('H36M: Protocol #1   (MPJPE) overall average: {:.2f} (mm)'.format(error_h36m_p1))
-    print('H36M: Protocol #2 (P-MPJPE) overall average: {:.2f} (mm)'.format(error_h36m_p2))
+    #error_h36m_p1, error_h36m_p2 = evaluate(data_dict['H36M_test'], model_pos, device)
+    #print('H36M: Protocol #1   (MPJPE) overall average: {:.2f} (mm)'.format(error_h36m_p1))
+    #print('H36M: Protocol #2 (P-MPJPE) overall average: {:.2f} (mm)'.format(error_h36m_p2))
 
     error_3dhp_p1, error_3dhp_p2 = evaluate(data_dict['3DHP_test'], model_pos, device, flipaug='_flip')
     print('3DHP: Protocol #1   (MPJPE) overall average: {:.2f} (mm)'.format(error_3dhp_p1))
     print('3DHP: Protocol #2 (P-MPJPE) overall average: {:.2f} (mm)'.format(error_3dhp_p2))
 
+    error_safety_p1, error_safety_p2 = evaluate_safety(data_dict['safety_test'], model_pos, device, flipaug='_flip')
+    print('Safety: Protocol #1   (MPJPE) overall average: {:.2f} (mm)'.format(error_safety_p1))
+    print('Safety: Protocol #2 (P-MPJPE) overall average: {:.2f} (mm)'.format(error_safety_p2))
 
 if __name__ == '__main__':
     args = get_parse_args()

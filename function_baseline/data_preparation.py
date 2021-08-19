@@ -66,11 +66,19 @@ def data_preparation(args):
                               batch_size=args.batch_size,
                               shuffle=False, num_workers=args.num_workers, pin_memory=True)
 
+    safety_npz = np.load('data_extra/test_set/test_safety.npz')
+    tmp = safety_npz
+    safety_loader = DataLoader(PoseBuffer([tmp['pose3d']], [tmp['pose2d']]),
+                               batch_size=args.batch_size,
+                               shuffle=False, num_workers=args.num_workers, pin_memory=True)
+
+
     return {
         'dataset': dataset,
         'train_loader': train_loader,
         'H36M_test': valid_loader,
         '3DHP_test': mpi3d_loader,
+        'safety_test' : safety_loader,
         'action_filter': action_filter,
         'subjects_test': subjects_test,
         'keypoints': keypoints

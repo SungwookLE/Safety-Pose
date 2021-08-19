@@ -77,4 +77,28 @@ Until here, you will have a data_extra folder:
       ├── prepare_data_3dhp.py
    ```
 
+# Safety
+The code for safety data preparation is borrowed from prepare_data_3dhp.py
+
+* Contact rune2002@hyundai.com to download the preprocessed text file `dataset_extras/safety_valid.txt`.
+* Then process the `dataset_extras/safety_valid.txt` with `prepare_data_safety.py` file to get the `test_safety.npz` (16 joints) and place it at `data_extra/test_set`.
+
+Until here, you will have a data_extra folder:
+   ```
+   ${PoseAug}
+   ├── data_extra
+      ├── bone_length_npy
+         ├── hm36s15678_bl_templates.npy
+      ├── dataset_extras
+         ├── mpi_inf_3dhp_valid.npz
+         ├── safety_valid.txt
+         ├── ... (not in use)
+      ├── test_set
+         ├── test_3dhp.npz
+         ├── test_safety.npz
+      ├── prepare_data_3dhp.ipynb
+      ├── prepare_data_3dhp.py
+      ├── prepare_data_safety.py
+   ```
+
 All the data are set up.
