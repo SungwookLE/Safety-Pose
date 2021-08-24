@@ -29,6 +29,8 @@ def evaluate(data_loader, model_pos_eval, device, summary=None, writer=None, key
     end = time.time()
 
     bar = Bar('Eval posenet on {}'.format(key), max=len(data_loader))
+    outputs_3d_stack = []
+
     for i, temp in enumerate(data_loader):
         targets_3d, inputs_2d = temp[0], temp[1]
 
@@ -56,6 +58,8 @@ def evaluate(data_loader, model_pos_eval, device, summary=None, writer=None, key
 
             else:
                 outputs_3d = model_pos_eval(inputs_2d.view(num_poses, -1)).view(num_poses, -1, 3).cpu()
+        
+        outputs_3d_stack.append(outputs_3d)
 
         # caculate the relative position.
         targets_3d = targets_3d[:, :, :] - targets_3d[:, :1, :]  # the output is relative to the 0 joint
@@ -91,7 +95,7 @@ def evaluate(data_loader, model_pos_eval, device, summary=None, writer=None, key
         # writer.add_scalar('posenet_{}'.format(key) + flipaug + '/_auc' + tag, epoch_auc.avg, summary.epoch)
 
     bar.finish()
-    return epoch_p1.avg, epoch_p2.avg
+    return epoch_p1.avg, epoch_p2.avg, outputs_3d_stack
 
 ####################################################################
 # ### evaluate p1 p2 pck auc dataset with test-flip-augmentation
@@ -109,6 +113,8 @@ def evaluate_safety(data_loader, model_pos_eval, device, summary=None, writer=No
     end = time.time()
 
     bar = Bar('Eval posenet on {}'.format(key), max=len(data_loader))
+    outputs_3d_stack = []
+
     for i, temp in enumerate(data_loader):
         targets_3d, inputs_2d = temp[0], temp[1]
 
@@ -136,6 +142,8 @@ def evaluate_safety(data_loader, model_pos_eval, device, summary=None, writer=No
 
             else:
                 outputs_3d = model_pos_eval(inputs_2d.view(num_poses, -1)).view(num_poses, -1, 3).cpu()
+
+        outputs_3d_stack.append(outputs_3d)
 
         # caculate the relative position.
         targets_3d = targets_3d[:, :, :] - targets_3d[:, 8:9, :]  # the output is relative to the 8 joint (Neck)
@@ -176,7 +184,7 @@ def evaluate_safety(data_loader, model_pos_eval, device, summary=None, writer=No
         # writer.add_scalar('posenet_{}'.format(key) + flipaug + '/_auc' + tag, epoch_auc.avg, summary.epoch)
 
     bar.finish()
-    return epoch_p1.avg, epoch_p2.avg
+    return epoch_p1.avg, epoch_p2.avg, outputs_3d_stack
 
 #########################################
 # overall evaluation function
