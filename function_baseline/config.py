@@ -28,7 +28,7 @@ def get_parse_args():
     parser.add_argument('--dropout', default=0.25, type=float, help='dropout rate')
 
     # Training detail
-    parser.add_argument('--batch_size', default=1024, type=int, metavar='N',
+    parser.add_argument('--batch_size', default=2048, type=int, metavar='N',
                         help='batch size in terms of predicted frames')
     parser.add_argument('--epochs', default=50, type=int, metavar='N', help='number of training epochs')
 
@@ -40,11 +40,11 @@ def get_parse_args():
     parser.set_defaults(max_norm=True)
 
     # Experimental setting
-    parser.add_argument('--random_seed', type=int, default=0)
+    parser.add_argument('--random_seed', type=int, default=1213)
     parser.add_argument('--downsample', default=1, type=int, metavar='FACTOR', help='downsample frame rate by factor')
     parser.add_argument('--pretrain', default=False, type=lambda x: (str(x).lower() == 'true'), help='used in poseaug')
     parser.add_argument('--s1only', default=False, type=lambda x: (str(x).lower() == 'true'), help='train S1 only')
-    parser.add_argument('--num_workers', default=2, type=int, metavar='N', help='num of workers for data loading')
+    parser.add_argument('--num_workers', default=8, type=int, metavar='N', help='num of workers for data loading')
 
     args = parser.parse_args()
 

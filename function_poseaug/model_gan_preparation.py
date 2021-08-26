@@ -17,20 +17,24 @@ def get_poseaug_model(args, dataset):
     print("==> Creating model...")
     device = torch.device("cuda")
     num_joints = dataset.skeleton().num_joints()
+    gpus = [int(i) for i in args.gpus.split(',')]
 
     # generator for PoseAug
     model_G = PoseGenerator(args, num_joints * 3).to(device)
     model_G.apply(init_weights)
+    model_G = torch.nn.DataParallel(model_G, gpus)
     print("==> Total parameters: {:.2f}M".format(sum(p.numel() for p in model_G.parameters()) / 1000000.0))
 
     # discriminator for 3D
     model_d3d = Pos3dDiscriminator(num_joints).to(device)
     model_d3d.apply(init_weights)
+    model_d3d = torch.nn.DataParallel(model_d3d, gpus)
     print("==> Total parameters: {:.2f}M".format(sum(p.numel() for p in model_d3d.parameters()) / 1000000.0))
 
     # discriminator for 2D
     model_d2d = Pos2dDiscriminator(num_joints).to(device)
     model_d2d.apply(init_weights)
+    model_d2d = torch.nn.DataParallel(model_d2d, gpus)
     print("==> Total parameters: {:.2f}M".format(sum(p.numel() for p in model_d2d.parameters()) / 1000000.0))
 
     # prepare optimizer

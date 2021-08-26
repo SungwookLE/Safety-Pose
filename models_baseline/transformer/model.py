@@ -113,16 +113,14 @@ class _GraphConv(nn.Module):
 
 
 class _ResGraphConv(nn.Module):
-    def __init__(self, adj, input_dim, output_dim, hid_dim, p_dropout):
+    def __init__(self, adj, input_dim, output_dim, p_dropout):
         super(_ResGraphConv, self).__init__()
 
-        self.gconv1 = _GraphConv(adj, input_dim, hid_dim, p_dropout)
-        self.gconv2 = _GraphConv(adj, hid_dim, output_dim, p_dropout)
+        self.gconv1 = _GraphConv(adj, input_dim, output_dim, p_dropout)
 
     def forward(self, x):
         residual = x
         out = self.gconv1(x)
-        out = self.gconv2(out)
         return residual + out
 
 
@@ -133,13 +131,17 @@ class PoseTransformer(nn.Module):
 
         self.gconv_input = nn.Sequential(
             _GraphConv(adj, 2, dim, p_dropout=dropout),
-            #GraphNonLocal(num_joints_in, bn_layer=True)
         )
 
         self.pos_embedding = nn.Parameter(torch.randn(1, num_joints_in, dim))
         self.dropout = nn.Dropout(emb_dropout)
+        self.transformers = nn.ModuleList([])
 
-        self.transformer = Transformer(dim, depth, heads, dim_head, mlp_dim, dropout)
+        for _ in range(depth):
+            self.transformers.append(nn.ModuleList([
+                Transformer(dim, 1, heads, dim_head, mlp_dim, dropout),
+                _ResGraphConv(adj, dim, dim, emb_dropout)
+            ]))
 
         self.to_latent = nn.Identity()
 
@@ -162,7 +164,9 @@ class PoseTransformer(nn.Module):
         x += self.pos_embedding[:, :]
         x = self.dropout(x)
 
-        x = self.transformer(x)
+        for transformer, res_gconv in self.transformers:
+            x = transformer(x)
+            x = res_gconv(x)
 
         x = self.to_latent(x)
         x = self.mlp_head(x)
