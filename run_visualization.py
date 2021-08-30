@@ -140,6 +140,9 @@ def main(args):
         }
     )
 
+    #python3 run_visualization.py --posenet_name 'transformer' --keypoints gt --evaluate 'checkpoint/ckpt_best_h36m_p1.pth.tar'
+    
+
 if __name__ == '__main__':
     args = get_parse_args()
     # fix random

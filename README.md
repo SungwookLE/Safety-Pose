@@ -118,6 +118,24 @@ python3 run_evaluate.py --posenet_name 'videopose' --keypoints gt --evaluate '/p
 ```
 We provide a [`checkpoint/PoseAug_result_summary.ipynb`](./checkpoint/PoseAug_result_summary.ipynb), which can generate the result summary table for all 16 experiments.
 
+Our Model `transformer` with parameters can be evaluated executing following bash with poseaug. ('21.8/30)
+```sh
+python3 run_evaluate.py --posenet_name 'transformer' --keypoints gt --evaluate 'checkpoint/ckpt_best_h36m_p1.pth.tar'
+```
+
+## Run visualization code('21.8/30)
+```sh
+python3 run_visualization.py --posenet_name 'transformer' --keypoints gt --evaluate 'checkpoint/ckpt_best_h36m_p1.pth.tar'.
+```
+The results are `safety_show3D.mp4` and `3dhp_show3D.mp4`. It needs improvement for resolving the occlustion problem as seen tat `saferty_show3D.mp4`.
+
+## Run Real-time demo code('21.8/30)
+```sh
+python3 run_demo.py --posenet_name 'transformer' --keypoints gt --evaluate 'checkpoint/ckpt_best_h36m_p1.pth.tar'.
+```
+This Real-time demo are used `Lightweight-openpose` 2D net for detecting 2D keypoints. The results is `demo_video.mp4`.
+
+
 
 ## Citation
 If you  find this code useful for your research, please consider citing the following paper:
