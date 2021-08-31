@@ -129,13 +129,16 @@ python3 run_visualization.py --posenet_name 'transformer' --keypoints gt --evalu
 ```
 The results are `safety_show3D.mp4` and `3dhp_show3D.mp4`. It needs improvement for resolving the occlustion problem as seen tat `saferty_show3D.mp4`.
 
-## Run Real-time demo code('21.8/30)
+## Run Real-time demo code('21.8/31)
 ```sh
-python3 run_demo.py --posenet_name 'transformer' --keypoints gt --evaluate 'checkpoint/ckpt_best_h36m_p1.pth.tar'.
+python3 run_demo.py --posenet_name 'transformer' --keypoints gt --evaluate 'checkpoint/ckpt_best_h36m_p1.pth.tar' --video 0
 ```
 This Real-time demo are used `Lightweight-openpose` 2D net for detecting 2D keypoints. The results is `demo_video.mp4`.
 
-
+for running `safety testing` image(realsense) data inferencing.
+```sh
+python3 run_demo.py --posenet_name 'transformer' --keypoints gt --evaluate 'checkpoint/ckpt_best_h36m_p1.pth.tar' --track 1 --images data_extra/test_set/testsets/RGB/*.png
+```
 
 ## Citation
 If you  find this code useful for your research, please consider citing the following paper:

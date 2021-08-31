@@ -25,8 +25,8 @@ def main(args):
 
     print('==> 2D Inferencing...')
 
-    net, frame_provider = net_2d_init()
-    pose_keypoints, recorded_imgs = run_demo(net, frame_provider, 256, False, 0, 1)
+    net, frame_provider, image_flag = net_2d_init(args)
+    pose_keypoints, recorded_imgs = run_demo(net, frame_provider, 256, False, args.track, 1, image_flag)
     pose_keypoints, no_detected_indexs = openpose_to_h36m(pose_keypoints, recorded_imgs[0].shape)
 
     print("==> 3D Creating model...")
@@ -84,7 +84,7 @@ def main(args):
     del camera, frame_provider
 
     return #왜 세그멘테이션 에러 나지 (8/28) del camera
-    #python3 run_demo.py --posenet_name 'transformer' --keypoints gt --evaluate 'checkpoint/ckpt_best_h36m_p1.pth.tar'
+    #python3 run_demo.py --posenet_name 'transformer' --keypoints gt --evaluate 'checkpoint/ckpt_best_h36m_p1.pth.tar' --track 1 --video 0
     
 if __name__ == '__main__':
     args = get_parse_args()

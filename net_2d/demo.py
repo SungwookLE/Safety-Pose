@@ -78,7 +78,7 @@ def infer_fast(net, img, net_input_height_size, stride, upsample_ratio, cpu,
     return heatmaps, pafs, scale, pad
 
 
-def run_demo(net, image_provider, height_size, cpu, track, smooth):
+def run_demo(net, image_provider, height_size, cpu, track, smooth, image_flag):
     
     net = net.eval()
     if not cpu:
@@ -118,7 +118,8 @@ def run_demo(net, image_provider, height_size, cpu, track, smooth):
                     pose_keypoints[kpt_id, 0] = int(all_keypoints[int(pose_entries[n][kpt_id]), 0])
                     pose_keypoints[kpt_id, 1] = int(all_keypoints[int(pose_entries[n][kpt_id]), 1])
             
-            pose_keypoints_batch.append(pose_keypoints)
+            if (image_flag == False):
+                pose_keypoints_batch.append(pose_keypoints)
             pose = Pose(pose_keypoints, pose_entries[n][18])
             current_poses.append(pose)
 
@@ -128,12 +129,19 @@ def run_demo(net, image_provider, height_size, cpu, track, smooth):
         for pose in current_poses:
             pose.draw(img)
         img = cv2.addWeighted(orig_img, 0.6, img, 0.4, 0)
+
         for pose in current_poses:
             cv2.rectangle(img, (pose.bbox[0], pose.bbox[1]),
                           (pose.bbox[0] + pose.bbox[2], pose.bbox[1] + pose.bbox[3]), (0, 255, 0))
+
             if track:
                 cv2.putText(img, 'id: {}'.format(pose.id), (pose.bbox[0], pose.bbox[1] - 16),
                             cv2.FONT_HERSHEY_COMPLEX, 0.5, (0, 0, 255))
+
+            if pose.id == 1: # safety video: 0 is rear right , 1 is passenger, 3 is rear left, 2 is driver
+                if (image_flag == True):
+                    pose_keypoints_batch.append(pose.keypoints)
+
         cv2.imshow('Lightweight-openpose 2D keypoints', img)
         key = cv2.waitKey(delay)
 
@@ -146,15 +154,22 @@ def run_demo(net, image_provider, height_size, cpu, track, smooth):
             else:
                 delay = 1
     
+    return pose_keypoints_batch, recorded_imgs
 
-
-def net_2d_init():
+def net_2d_init(args):
     net = PoseEstimationWithMobileNet()
     checkpoint = torch.load('net_2d/checkpoint/checkpoint_iter_370000.pth', map_location='cpu')
     load_state(net, checkpoint)
-    frame_provider =VideoReader(0)
 
-    return net, frame_provider
+    frame_provider = ImageReader(args.images)
+    if args.video != '':
+        frame_provider = VideoReader(args.video)
+        image_flag = False
+    else:
+        image_flag = True
+
+
+    return net, frame_provider, image_flag
 
 
 

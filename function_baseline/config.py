@@ -46,6 +46,11 @@ def get_parse_args():
     parser.add_argument('--s1only', default=False, type=lambda x: (str(x).lower() == 'true'), help='train S1 only')
     parser.add_argument('--num_workers', default=8, type=int, metavar='N', help='num of workers for data loading')
 
+    # Demo setting
+    parser.add_argument('--images', nargs='+', default='', help='path to input image(s)')
+    parser.add_argument('--video', type=str, default='', help='path to video file or camera id')
+    parser.add_argument('--track', type=int, default=0, help='track pose id in video')
+
     args = parser.parse_args()
 
     return args
