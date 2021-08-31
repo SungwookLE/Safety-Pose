@@ -68,9 +68,33 @@ def data_preparation(args):
 
     safety_npz = np.load('data_extra/test_set/test_safety.npz')
     tmp = safety_npz
-    safety_loader = DataLoader(PoseBuffer([tmp['pose3d']], [tmp['pose2d']]),
+
+
+    # (8/31) Zero Masking for undetected keypoints in safety data, openpose that we used as 2D net returns undetected keypoints as [-1,-1]
+    # The Safety originally results show MPJPE 83.41 mm / P-MPJPE 46.68mm before adapting zero masking,
+    # After zero masking the results show MPJPE 70.16mm / P-MPJPE 38.45mm
+    
+    def zero_masking_for_undecting(tmp2d):
+
+        res_tmp2d = tmp2d
+        
+        for id_batch, data in enumerate(tmp2d):
+            for id_key, element in enumerate(data):
+                inputs_2d = element
+                # for zero masking when no detecting 2D keypoints
+                if (inputs_2d[0] == -1 and inputs_2d[1] == -0.5625):
+                    res_tmp2d[id_batch][id_key] = [0,0]
+
+        return res_tmp2d
+    tmp_pose2d = zero_masking_for_undecting(tmp['pose2d'])
+    
+    safety_loader = DataLoader(PoseBuffer([tmp['pose3d']], [tmp_pose2d]),
                                batch_size=args.batch_size,
                                shuffle=False, num_workers=args.num_workers, pin_memory=True)
+
+    # safety_loader = DataLoader(PoseBuffer([tmp['pose3d']], [tmp['pose2d']]),
+    #                            batch_size=args.batch_size,
+    #                            shuffle=False, num_workers=args.num_workers, pin_memory=True)
 
 
     return {
