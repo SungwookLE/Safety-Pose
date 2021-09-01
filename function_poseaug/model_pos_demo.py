@@ -17,7 +17,7 @@ from utils.utils import AverageMeter
 ####################################################################
 # ### evaluate p1 p2 pck auc dataset with test-flip-augmentation
 ####################################################################
-def evaluate_demo(inputs, model_pos_eval, device, summary=None):
+def evaluate_demo(inputs, model_pos_eval, device, summary=None, thorax_relative=0):
     
     # Switch to evaluate mode
     model_pos_eval.eval()
@@ -32,9 +32,15 @@ def evaluate_demo(inputs, model_pos_eval, device, summary=None):
 
     with torch.no_grad():
         outputs_3d = model_pos_eval(inputs_2d.view(num_poses, -1)).view(num_poses, -1, 3).cpu()
-        outputs_3d_stack = list(outputs_3d)
+        if thorax_relative == 0:
+            outputs_3d_stack = list(outputs_3d)
+            #python3 run_demo.py --posenet_name 'transformer' --keypoints gt --evaluate 'checkpoint/ckpt_best_h36m_p1.pth.tar' --thorax_relative 0 --track 1 --video 0
 
         # caculate the relative position.
-        outputs_3d = outputs_3d[:, :, :] - outputs_3d[:, :1, :]  # the output is relative to the 0 joint
+        elif thorax_relative == 1:
+            outputs_3d = outputs_3d[:, :, :] - outputs_3d[:, 8:9, :]  # the output is relative to the 8 joint
+            outputs_3d_stack = list(outputs_3d)
+            #python3 run_demo.py --posenet_name 'transformer' --keypoints gt --evaluate 'checkpoint/ckpt_best_h36m_p1.pth.tar' --thorax_relative 1 --track 1 --video 0
+    
  
     return outputs_3d_stack

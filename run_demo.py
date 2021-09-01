@@ -42,7 +42,7 @@ def main(args):
     except:
         model_pos.load_state_dict(ckpt['model_pos'])
 
-    pred_demo = evaluate_demo(pose_keypoints, model_pos, device)
+    pred_demo = evaluate_demo(pose_keypoints, model_pos, device, thorax_relative=args.thorax_relative)
 
     import matplotlib.pyplot as plt
     from celluloid import Camera

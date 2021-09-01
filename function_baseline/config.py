@@ -50,6 +50,7 @@ def get_parse_args():
     parser.add_argument('--images', nargs='+', default='', help='path to input image(s)')
     parser.add_argument('--video', type=str, default='', help='path to video file or camera id')
     parser.add_argument('--track', type=int, default=0, help='track pose id in video')
+    parser.add_argument('--thorax_relative', type=int, default=0, help='calculating 3D coord. in relative distance from thorax')
 
     args = parser.parse_args()
 

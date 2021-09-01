@@ -140,6 +140,11 @@ for running `safety testing` image(realsense) data inferencing.
 python3 run_demo.py --posenet_name 'transformer' --keypoints gt --evaluate 'checkpoint/ckpt_best_h36m_p1.pth.tar' --track 1 --images data_extra/test_set/testsets/RGB/*.png
 ```
 
+for 3D plotting coordinates calculated with thorax relative distance. --thorax_relative argument is the option key
+```sh
+python3 run_demo.py --posenet_name 'transformer' --keypoints gt --evaluate 'checkpoint/ckpt_best_h36m_p1.pth.tar' --thorax_relative 1 --track 1 --video 0
+```
+
 ## Citation
 If you  find this code useful for your research, please consider citing the following paper:
 
