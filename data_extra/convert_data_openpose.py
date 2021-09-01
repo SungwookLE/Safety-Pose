@@ -162,8 +162,8 @@ def show2Dpose(img, channels, ax, no2d_index= [],lcolor="#3498db", rcolor="#e74c
     if add_labels:
         ax.set_xlabel("x")
         ax.set_ylabel("y")
-        
-    ax.axis('off')
+    else:
+        ax.axis('off')
     #ax.set_aspect('equal')
 
 import matplotlib.pyplot as plt
@@ -210,11 +210,15 @@ def show3Dpose(channels, ax, no2d_index= [], lcolor="#3498db", rcolor="#e74c3c",
     ax.set_ylim3d([-RADIUS+zroot, RADIUS+zroot])
     ax.set_zlim3d([-RADIUS-yroot, RADIUS-yroot])
 
-
     if add_labels:
         ax.set_xlabel("x")
         ax.set_ylabel("z")
         ax.set_zlabel("-y")
+    else:
+        ax.set_yticklabels([])
+        ax.set_xticklabels([])
+        ax.set_zticklabels([])
+
 
     # Get rid of the panes (actually, make them white)
     white = (1.0, 1.0, 1.0, 0.0)

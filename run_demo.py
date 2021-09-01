@@ -65,7 +65,7 @@ def main(args):
         pred_3d, pred_2d, img, no2d_detected = pred
 
         show2Dpose(img, pred_2d, no2d_index=no2d_detected, ax=ax1, add_labels=False)
-        show3Dpose(pred_3d, no2d_index=no2d_detected, ax =ax2)
+        show3Dpose(pred_3d, no2d_index=no2d_detected, ax =ax2, add_labels=False)
 
         camera.snap()
         if (time.time() > now+7):
