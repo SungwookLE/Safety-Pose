@@ -5,6 +5,7 @@
        <td><img src="assets/demo2.gif" frame=void rules=none></td>
    </tr>
 </table>
+
 ## Installation
 The experiments are conducted on Ubuntu 18.04, with Python version 3.7.8, and PyTorch version 1.7.1.
 
