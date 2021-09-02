@@ -64,12 +64,12 @@ python3 run_demo.py --posenet_name 'transformer' --keypoints gt --evaluate '/pat
 ```
 This Real-time demo uses [Lightweight-OpenPose](https://github.com/Daniil-Osokin/lightweight-human-pose-estimation.pytorch) 2D net for detecting 2D keypoints.
 
-For inferencing with `safety testing` image(realsense) data:
+For inferencing with `safety testing` recorded images by Realsense Camera, you can add --track option with argument 1. `--track` option supports same target tracking in subsequent images or video 
 ```sh
 python3 run_demo.py --posenet_name 'transformer' --keypoints gt --evaluate '/path/to/checkpoint' --track 1 --images data_extra/test_set/testsets/RGB/*.png
 ```
 
-For 3D plotting coordinates calculated with thorax relative distance, you can add --thorax_relative option with argument 1.
+For 3D plotting coordinates calculated with thorax relative distance, you can add --thorax_relative option with argument 1. `--thorax_relative` option support calculating relative distance from thorax not hip.
 ```sh
 python3 run_demo.py --posenet_name 'transformer' --keypoints gt --evaluate '/path/to/checkpoint' --thorax_relative 1 --track 1 --video 0
 ```
