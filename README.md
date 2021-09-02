@@ -1,4 +1,4 @@
-# Safety-Pose: 3D Human Pose Estimation for automotive application
+# Safety-Pose: 3D Human Pose Estimation for Automotive Applications
 <table style="border:0px">
    <tr>
        <td><img src="assets/demo1.gif" frame=void rules=none></td>
