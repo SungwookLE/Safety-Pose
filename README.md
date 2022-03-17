@@ -17,10 +17,12 @@ conda activate safety-pose
 pip install -r requirements.txt
 ```
 
-## Prepare dataset
+Recomment the docker run environment, docker settings are explained below.
+
+## 1 Prepare dataset
 * Please refer to [`DATASETS.md`](./DATASETS.md) for the preparation of the dataset files. 
 
-## Run training code  
+## 2 Run training code  
 * There are 8 experiments in total (4 for baseline training, 4 for PoseAug training), including four 2D pose settings (Ground Truth, CPN, DET, HR-Net).
 * You can also train other pose estimators ([SemGCN](https://github.com/garyzhao/SemGCN), [SimpleBaseline](https://github.com/una-dinosauria/3d-pose-baseline), [ST-GCN](https://github.com/vanoracai/Exploiting-Spatial-temporal-Relationships-for-3D-Pose-Estimation-via-Graph-Convolutional-Networks), [VideoPose](https://github.com/facebookresearch/VideoPose3D)). Please refer to [PoseAug](https://github.com/jfzhang95/PoseAug).
 * The training procedure contains two steps: pretrain the baseline models and then train these baseline models with PoseAug.  
@@ -49,16 +51,16 @@ tensorboard --logdir=/path/to/eventfile
 * For simplicity, hyper-param for different 2D pose settings are the same. If you want to explore better performance for specific setting, please try changing the hyper-param. 
 * The GAN training may collapse, change the hyper-param (e.g., random_seed) and re-train the models will solve the problem.
 
-## Run evaluation code
+## 3 Run evaluation code
 
 ```sh
 python3 run_evaluate.py --posenet_name 'transformer' --keypoints gt --evaluate '/path/to/checkpoint'
 ```
-## Run visualization code
+## 4 Run visualization code
 ```sh
 python3 run_visualization.py --posenet_name 'transformer' --keypoints gt --evaluate '/path/to/checkpoint'
 ```
-## Run Real-time demo code
+## 5 Run Real-time demo code
 ```sh
 python3 run_demo.py --posenet_name 'transformer' --keypoints gt --evaluate '/path/to/checkpoint' --video 0
 ```
@@ -74,11 +76,46 @@ For 3D plotting coordinates calculated with thorax relative distance, you can ad
 python3 run_demo.py --posenet_name 'transformer' --keypoints gt --evaluate '/path/to/checkpoint' --thorax_relative 1 --track 1 --video 0
 ```
 
-## Docker Run
+---
 
-0. BASE 이미지: docker pull pytorch/pytorch:1.9.0-cuda10.2-cudnn7-runtime
+## 6 Docker Run
 
-1. 옳바르게 docker 컨테이너 torch.cuda 연결되었는지 테스트 코드
+1. BASE 이미지: docker pull pytorch/pytorch:1.9.0-cuda10.2-cudnn7-runtime
+
+2. base 이미지에서 아래 패키지를 추가 설치하고 docker push 하여 이미지 생성함
+
+ - 아래 외의 것들도 있을 수 있는데 그건, ModuleImport Error 보면서 추가 설치하였음
+
+	```
+	apt update
+	apt-get install python3-pip #pip 설치
+	apt-get install -y git #git 설치
+	git clone https://github.com/SungwookLE/Safety-Pose.git
+
+	pip install tensorboardX
+	pip install scipy
+	pip install opencv-python
+	pip install opencv-contrib-python
+	apt-get -y install libgl1-mesa-glx
+	pip install pycocotools
+	apt install libxcb-xinerama0
+	pip install celluloid
+	apt-get -y install libgtk2.0-dev
+	apt-get install -y libxcb-util1
+	```
+
+3. docker 이미지 push 함
+
+ - https://hub.docker.com/repository/docker/joker1251/poseaug
+ 
+4. docker 이미지 pull
+
+	```
+	docker pull joker1251/poseaug:0.0
+	```
+	
+
+5. 옳바르게 docker 컨테이너 torch.cuda 연결되었는지 테스트 코드
 
 	``` python
 	import torch
@@ -99,7 +136,7 @@ python3 run_demo.py --posenet_name 'transformer' --keypoints gt --evaluate '/pat
 	torch.cuda.device(0)
 	```
 
-2. opencv 비디오 연결이 제대로 되는지 확인
+6. opencv 비디오 연결이 제대로 되는지 확인
  - 테스트 코드
  
 	 ```
@@ -107,48 +144,25 @@ python3 run_demo.py --posenet_name 'transformer' --keypoints gt --evaluate '/pat
 	 python test.py
 	 ```
 
-3. base 이미지에서 아래 패키지를 추가 설치하고 docker push 하여 이미지 생성함
-
-	```
-	apt update
-	apt-get install python3-pip #pip 설치
-	apt-get install -y git #git 설치
-	git clone https://github.com/SungwookLE/Safety-Pose.git
-
-	pip install tensorboardX
-	pip install scipy
-	pip install opencv-python
-	pip install opencv-contrib-python
-	apt-get -y install libgl1-mesa-glx
-	pip install pycocotools
-	apt install libxcb-xinerama0
-	pip install celluloid
-	apt-get -y install libgtk2.0-dev
-	apt-get install -y libxcb-util1
-	```
-
-4. 도커 컨테이너 실행 명령어
+7. 도커 컨테이너 실행 명령어
  - cv2 카메라를 로컬에서 사용하기 위해 옵션 키워드가 많음
-
+ 
+ 
 	```
 	docker run -p 8888:8888 --privileged --rm -it -v /dev/video0:/dev/video0 -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY -v /dev/snd:/dev/snd -e="QT_X11_NO_MITSHM=1" --gpus all -v ~/docker:/data poseaug:latest /bin/bash
-	``
+	```
 
-5. 실행 명령어
-
+8. poseaug Realtime Demo 실행 명령어
 	```
 	python3 run_demo.py --posenet_name 'transformer' --keypoints gt --evaluate 'checkpoint/ckpt_best_h36m_p1.pth.tar' --track 1 --video 0 --thorax_relative 1
 	```
 
-6. docker 이미지 pull
-
-	```
-	docker pull joker1251/poseaug:0.0
-	```
-
-7. Reference
+9. Reference
  - 도커 이미지 생성 Ref: https://greeksharifa.github.io/references/2021/06/21/Docker/
 
+---
 
-## Acknowledgements
+## 7 Acknowledgements
 This repo is created for cooperation on the Hyundai Motor Group AI Competition project, not for commercial use. The repo is forked from [PoseAug](https://github.com/jfzhang95/PoseAug) and our model uses [SemGCN](https://github.com/garyzhao/SemGCN) as backbone. We thank to the authors for releasing their codes.
+
+## End
