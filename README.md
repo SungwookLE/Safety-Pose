@@ -73,6 +73,9 @@ For 3D plotting coordinates calculated with thorax relative distance, you can ad
 ```sh
 python3 run_demo.py --posenet_name 'transformer' --keypoints gt --evaluate '/path/to/checkpoint' --thorax_relative 1 --track 1 --video 0
 ```
+
+## Docker Run
+
 0. BASE 이미지: docker pull pytorch/pytorch:1.9.0-cuda10.2-cudnn7-runtime
 
 1. 옳바르게 docker 컨테이너 torch.cuda 연결되었는지 테스트 코드
